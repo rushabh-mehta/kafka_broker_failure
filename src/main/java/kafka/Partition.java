@@ -35,7 +35,7 @@ public class Partition {
             brokers.get(i).addPartition(p);
             this.isr.add(p);
             zkManager.create("/brokers/topics/"+this.topic.getName()+"/partitions/"+id,null);
-            zkManager.create("/brokers/topics/"+this.topic.getName()+"/partitions/"+id+"/state",null);
+//            zkManager.create("/brokers/topics/"+this.topic.getName()+"/partitions/"+id+"/state",null);
         }
     }
 

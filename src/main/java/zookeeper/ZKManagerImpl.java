@@ -1,15 +1,12 @@
 package zookeeper;
 
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.*;
 import zookeeper.ZKConnection;
 import zookeeper.ZKManager;
-import org.apache.zookeeper.ZKUtil;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 public class ZKManagerImpl implements ZKManager {
     private static ZooKeeper zkeeper;
@@ -57,5 +54,10 @@ public class ZKManagerImpl implements ZKManager {
     public void delete(String path) throws InterruptedException, KeeperException {
         int version = zkeeper.exists(path, true).getVersion();
         ZKUtil.deleteRecursive(zkeeper,path);
+    }
+
+    public List<String> getChildren(String path, Watcher watcher) throws InterruptedException, KeeperException {
+        int version = zkeeper.exists(path, true).getVersion();
+        return zkeeper.getChildren(path, watcher);
     }
 }

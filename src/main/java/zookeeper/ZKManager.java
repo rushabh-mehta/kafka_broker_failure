@@ -1,8 +1,10 @@
 package zookeeper;
 
 import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.Watcher;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 public interface ZKManager {
     public void create(String path, byte[] data)
@@ -12,4 +14,5 @@ public interface ZKManager {
             throws KeeperException, InterruptedException;
     public void delete(String path)
             throws KeeperException, InterruptedException;
+    public List<String> getChildren(String path, Watcher watcher) throws KeeperException, InterruptedException;
 }
