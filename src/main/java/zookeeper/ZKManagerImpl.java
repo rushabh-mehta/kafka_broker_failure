@@ -52,8 +52,10 @@ public class ZKManagerImpl implements ZKManager {
     }
 
     public void delete(String path) throws InterruptedException, KeeperException {
-        int version = zkeeper.exists(path, true).getVersion();
-        ZKUtil.deleteRecursive(zkeeper,path);
+        if(zkeeper.exists(path, true)!=null){
+            int version = zkeeper.exists(path, true).getVersion();
+            ZKUtil.deleteRecursive(zkeeper,path);
+        }
     }
 
     public List<String> getChildren(String path, Watcher watcher) throws InterruptedException, KeeperException {

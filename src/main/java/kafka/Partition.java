@@ -39,6 +39,14 @@ public class Partition {
         }
     }
 
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "Partition{" +

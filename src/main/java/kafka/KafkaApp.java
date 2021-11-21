@@ -9,23 +9,23 @@ import zookeeper.ZKManagerImpl;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class KafkaApp {
     public static void main(String[] args) throws InterruptedException, KeeperException, IOException {
+
         ZKManager zkManager = new ZKManagerImpl();
         zkManager.delete("/brokers");
         zkManager.create("/brokers",null);
         zkManager.create("/brokers/ids",null);
         zkManager.create("/brokers/topics",null);
-
-        Broker b1 = new Broker(0, zkManager);
+        Kafka kafka = new Kafka();
+        Broker b1 = new Broker(0, zkManager, new ArrayList<>(Arrays.asList(0,1)));
         zkManager.create("/brokers/ids/0",null);
-        Broker b2 = new Broker(1, zkManager);
+        Broker b2 = new Broker(1, zkManager, new ArrayList<>(Arrays.asList(0,1)));
         zkManager.create("/brokers/ids/1",null);
+        kafka.addBroker(b1);
+        kafka.addBroker(b2);
         Topic t1 = new Topic("topic1");
         zkManager.create("/brokers/topics/topic1",null);
         Topic t2 = new Topic("topic2");
@@ -80,34 +80,33 @@ public class KafkaApp {
         t1l2.createReplica(1, brokerList);
         t1l3.createReplica(1, brokerList);
         brokerList.clear();
-        String data = new JSONObject().put("isr","[0,6]").put("leader","0").toString();
+        String data = new JSONObject().put("isr","[0,9]").put("leader","0").toString();
         zkManager.create("/brokers/topics/topic1/partitions/0/state", data.getBytes());
-        data = new JSONObject().put("isr","[1,7]").put("leader","1").toString();
+        data = new JSONObject().put("isr","[1,10]").put("leader","1").toString();
         zkManager.create("/brokers/topics/topic1/partitions/1/state",data.getBytes());
-        data = new JSONObject().put("isr","[2,8]").put("leader","2").toString();
+        data = new JSONObject().put("isr","[2,11]").put("leader","2").toString();
         zkManager.create("/brokers/topics/topic1/partitions/2/state",data.getBytes());
-        data = new JSONObject().put("isr","[3,9]").put("leader","3").toString();
+        data = new JSONObject().put("isr","[3,6]").put("leader","3").toString();
         zkManager.create("/brokers/topics/topic2/partitions/3/state",data.getBytes());
-        data = new JSONObject().put("isr","[4,10]").put("leader","4").toString();
+        data = new JSONObject().put("isr","[4,7]").put("leader","4").toString();
         zkManager.create("/brokers/topics/topic2/partitions/4/state",data.getBytes());
-        data = new JSONObject().put("isr","[5,11]").put("leader","5").toString();
+        data = new JSONObject().put("isr","[5,8]").put("leader","5").toString();
         zkManager.create("/brokers/topics/topic2/partitions/5/state",data.getBytes());
-        data = new JSONObject().put("isr","[0,6]").put("leader","0").toString();
-        zkManager.create("/brokers/topics/topic2/partitions/6/state",data.getBytes());
-        data = new JSONObject().put("isr","[1,7]").put("leader","1").toString();
-        zkManager.create("/brokers/topics/topic2/partitions/7/state",data.getBytes());
-        data = new JSONObject().put("isr","[2,8]").put("leader","2").toString();
-        zkManager.create("/brokers/topics/topic2/partitions/8/state",data.getBytes());
-        data = new JSONObject().put("isr","[3,9]").put("leader","3").toString();
+        data = new JSONObject().put("isr","[0,9]").put("leader","0").toString();
         zkManager.create("/brokers/topics/topic1/partitions/9/state",data.getBytes());
-        data = new JSONObject().put("isr","[4,10]").put("leader","4").toString();
+        data = new JSONObject().put("isr","[1,10]").put("leader","1").toString();
         zkManager.create("/brokers/topics/topic1/partitions/10/state",data.getBytes());
-        data = new JSONObject().put("isr","[5,11]").put("leader","5").toString();
+        data = new JSONObject().put("isr","[2,11]").put("leader","2").toString();
         zkManager.create("/brokers/topics/topic1/partitions/11/state",data.getBytes());
+        data = new JSONObject().put("isr","[3,6]").put("leader","3").toString();
+        zkManager.create("/brokers/topics/topic2/partitions/6/state",data.getBytes());
+        data = new JSONObject().put("isr","[4,7]").put("leader","4").toString();
+        zkManager.create("/brokers/topics/topic2/partitions/7/state",data.getBytes());
+        data = new JSONObject().put("isr","[5,8]").put("leader","8").toString();
+        zkManager.create("/brokers/topics/topic2/partitions/8/state",data.getBytes());
         System.out.println(b1);
         System.out.println(b2);
         b1.getController().start();
-        b2.down();
         b1.down();
     }
 }

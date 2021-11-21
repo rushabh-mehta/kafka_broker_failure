@@ -5,6 +5,7 @@ import zookeeper.ZKManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Broker {
     int id;
@@ -12,11 +13,11 @@ public class Broker {
     List<Partition> partitions;
     ZKManager zkManager;
 
-    public Broker(int id, ZKManager zkManager) {
+    public Broker(int id, ZKManager zkManager, List<Integer> brokerIds) {
         this.id = id;
         this.zkManager = zkManager;
         partitions = new ArrayList<>();
-        controller = new Controller(zkManager);
+        controller = new Controller(zkManager,brokerIds);
     }
 
     public void down() throws InterruptedException, KeeperException {
@@ -35,6 +36,14 @@ public class Broker {
         return controller;
     }
 
+    public List<Partition> getPartitions() {
+        return partitions;
+    }
+
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "Broker{" +
@@ -42,5 +51,18 @@ public class Broker {
                 ", controller=" + controller +
                 ", partitions=" + partitions +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Broker broker = (Broker) o;
+        return id == broker.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
